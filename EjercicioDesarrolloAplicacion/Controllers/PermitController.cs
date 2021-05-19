@@ -24,7 +24,7 @@ namespace EjercicioDesarrolloAplicacion.Controllers
         [HttpGet]
         public async Task<IActionResult> Get()
         {
-            var result = await _context.Permit.ToListAsync();
+            var result = await _context.Permit.Include(t => t.PermitType).ToListAsync();
             return Ok(result);
         }
 

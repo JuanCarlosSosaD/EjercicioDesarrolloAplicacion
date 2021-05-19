@@ -13,6 +13,7 @@ using Microsoft.Extensions.Logging;
 using Microsoft.EntityFrameworkCore;
 using EjercicioDesarrolloAplicacion.Data;
 using Newtonsoft.Json;
+using Microsoft.EntityFrameworkCore.Internal;
 
 namespace EjercicioDesarrolloAplicacion
 {
@@ -50,6 +51,13 @@ namespace EjercicioDesarrolloAplicacion
             app.UseHttpsRedirection();
 
             app.UseRouting();
+
+            app.UseCors(options =>
+            {
+                options.AllowAnyMethod();
+                options.AllowAnyHeader();
+                options.AllowAnyOrigin();
+            });
 
             app.UseAuthorization();
 
