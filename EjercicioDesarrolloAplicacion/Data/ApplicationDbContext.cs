@@ -1,4 +1,5 @@
 ﻿using EjercicioDesarrolloAplicacion.Model;
+using Microsoft.CodeAnalysis.CSharp.Syntax;
 using Microsoft.EntityFrameworkCore;
 using System;
 using System.Collections.Generic;
@@ -13,7 +14,26 @@ namespace EjercicioDesarrolloAplicacion.Data
         {
 
         }
-        public DbSet<Permit> Permiso { get; set; }
-        public DbSet<PermitType> TipoPermiso { get; set; }
+
+        protected override void OnModelCreating(ModelBuilder modelBuilder)
+        {
+            modelBuilder.Entity<PermitType>().HasData(new PermitType
+            {
+                ID = 1,
+                Description = "Sickness"
+            });
+            modelBuilder.Entity<PermitType>().HasData(new PermitType
+            {
+                ID = 2,
+                Description = "Errands"
+            });
+            modelBuilder.Entity<PermitType>().HasData(new PermitType
+            {
+                ID = 3,
+                Description = "Other"
+            });
+        }
+        public DbSet<Permit> Permit { get; set; }
+        public DbSet<PermitType> PermitType { get; set; }
     }
 }
