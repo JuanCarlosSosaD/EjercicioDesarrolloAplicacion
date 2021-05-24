@@ -2,7 +2,7 @@
 using System.Collections.Generic;
 using System.Linq;
 using System.Threading.Tasks;
-using EjercicioDesarrolloAplicacion.Data;
+using EDA.Domain.Supervisor;
 using EjercicioDesarrolloAplicacion.Model;
 using Microsoft.AspNetCore.Http;
 using Microsoft.AspNetCore.Mvc;
@@ -14,52 +14,52 @@ namespace EjercicioDesarrolloAplicacion.Controllers
     [ApiController]
     public class PermitController : ControllerBase
     {
-        private ApplicationDbContext _context;
 
-        public PermitController(ApplicationDbContext context)
+        private IEDASupervisor _edaSupervisor;
+
+        public PermitController(IEDASupervisor edaSupervisor)
         {
-            _context = context;
+            _edaSupervisor = edaSupervisor;
         }
 
         [HttpGet]
         public async Task<IActionResult> Get()
         {
-            var result = await _context.Permit.Include(t => t.PermitType).ToListAsync();
+            var result = await _edaSupervisor.GetPermits();
             return Ok(result);
         }
 
         [HttpGet("{id}")]
         public async Task<IActionResult> Get(int? id)
         {
-            Permit permit = await _context.Permit.FindAsync(id);
-            if (permit == null)
+            var result = await _edaSupervisor.GetPermit(id);
+            if (result == null)
             {
                 return NotFound();
             }
-            return Ok(permit);
+            return Ok(result);
         }
 
         [HttpPost]
-        public async Task<IActionResult> Create(Permit permit)
+        public async Task<IActionResult> Create(EDA.Domain.ApiModels.PermitAPIModel permit)
         {
             try
             {
-                _context.Add(permit);
-                await _context.SaveChangesAsync();
+                var result = await _edaSupervisor.CreatePermit(permit);
                 return CreatedAtAction(nameof(Create), permit);
             }
-            catch (Exception ex)
+            catch (Exception)
             {
                 throw;
             }
         }
+
         [HttpPut]
-        public async Task<IActionResult> Edit(Permit permit)
+        public async Task<IActionResult> Edit(EDA.Domain.ApiModels.PermitAPIModel permit)
         {
             try
             {
-                _context.Update(permit);
-                await _context.SaveChangesAsync();
+                await _edaSupervisor.UpdatePermit(permit);
                 return Ok();
             }
             catch (Exception ex)
@@ -73,18 +73,16 @@ namespace EjercicioDesarrolloAplicacion.Controllers
         {
             try
             {
-                Permit permit = await _context.Permit.FindAsync(id);
+                var permit = await _edaSupervisor.GetPermit(id);
                 if (permit == null)
                 {
                     return NotFound();
                 }
-                _context.Remove(permit);
-                await _context.SaveChangesAsync();
+                await _edaSupervisor.DeletePermit(id);
                 return Ok();
             }
             catch (Exception ex)
             {
-
                 throw;
             }
 

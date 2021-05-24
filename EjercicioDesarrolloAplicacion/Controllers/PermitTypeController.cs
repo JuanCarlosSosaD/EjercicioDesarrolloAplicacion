@@ -2,8 +2,7 @@
 using System.Collections.Generic;
 using System.Linq;
 using System.Threading.Tasks;
-using EjercicioDesarrolloAplicacion.Data;
-using EjercicioDesarrolloAplicacion.Model;
+using EDA.Domain.Supervisor;
 using Microsoft.AspNetCore.Http;
 using Microsoft.AspNetCore.Mvc;
 using Microsoft.EntityFrameworkCore;
@@ -14,17 +13,17 @@ namespace EjercicioDesarrolloAplicacion.Controllers
     [ApiController]
     public class PermitTypeController : ControllerBase
     {
-        private ApplicationDbContext _context;
+        private IEDASupervisor _edaSupervisor;
 
-        public PermitTypeController(ApplicationDbContext context)
+        public PermitTypeController(IEDASupervisor edaSupervisor)
         {
-            _context = context;
+            _edaSupervisor = edaSupervisor;
         }
 
         [HttpGet]
         public async Task<IActionResult> Get()
         {
-            var result = await _context.PermitType.ToListAsync();
+            var result = await _edaSupervisor.GetPermitTypes();
             return Ok(result);
         }
     }

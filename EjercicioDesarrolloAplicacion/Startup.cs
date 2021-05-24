@@ -11,9 +11,14 @@ using Microsoft.Extensions.DependencyInjection;
 using Microsoft.Extensions.Hosting;
 using Microsoft.Extensions.Logging;
 using Microsoft.EntityFrameworkCore;
-using EjercicioDesarrolloAplicacion.Data;
 using Newtonsoft.Json;
 using Microsoft.EntityFrameworkCore.Internal;
+using EDA.Infraestructure;
+using EDA.Domain.Entities;
+using EjercicioDesarrolloAplicacion.Model;
+using EDA.Domain.Repositories;
+using EDA.Infraestructure.Repositories;
+using EDA.Domain.Supervisor;
 
 namespace EjercicioDesarrolloAplicacion
 {
@@ -29,15 +34,19 @@ namespace EjercicioDesarrolloAplicacion
         // This method gets called by the runtime. Use this method to add services to the container.
         public void ConfigureServices(IServiceCollection services)
         {
-            services.AddDbContext<ApplicationDbContext>(options =>
-            {
-                options.UseSqlServer(Configuration.GetConnectionString("Default"));
-            });
-            
+
+            services.AddScoped<IPermitRepository, PermitRepository>(); 
+            services.AddScoped<IPermitTypeRepository, PermitTypeRepository>(); 
+            services.AddScoped<IEDASupervisor, EDASupervisor>(); 
+
+            services.AddInfrastructure(Configuration);
+
             services.AddEntityFrameworkSqlServer().AddMvc();
 
             services.AddControllers().AddNewtonsoftJson(options =>
                 options.SerializerSettings.ReferenceLoopHandling = Newtonsoft.Json.ReferenceLoopHandling.Ignore);
+
+      
         }
 
         // This method gets called by the runtime. Use this method to configure the HTTP request pipeline.
